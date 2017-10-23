@@ -1,0 +1,13 @@
+select * from Ambulatorios where capacidade > 30;
+Select * from Medicos where idade < 40 or especialidade = 'traumatologia';
+select codm, codp from Consultas where hora >= '13:00' and data > '2016/10/15';
+select nome, idade from Pacientes where cidade != 'Florianopolis';
+select nome, (idade*12) as idadeMeses from Pacientes;
+select MAX(salario), MIN(salario) from Funcionarios where cidade = 'Florianopolis';
+select MAX(hora) as horario from Consultas where data = '2016/10/12';
+select AVG(idade), COUNT(nroa) from Medicos;
+select nome,(salario - salario*0.2) as salarioLiquido from Funcionarios;
+select nome from Funcionarios where nome LIKE '%a';
+select nome, especialidade from Medicos where nome LIKE '_o%o';
+select codp, nome From Pacientes where idade > 25 and doenca IN ('tendinite', 'fratura','gripe','sarampo');
+select CPF, nome, idade from Medicos where cidade = 'Florianopolis' Union select CPF, nome, idade from Pacientes where cidade = 'Florianopolis' Union select CPF, nome, idade from Funcionarios where cidade = 'Florianopolis';
