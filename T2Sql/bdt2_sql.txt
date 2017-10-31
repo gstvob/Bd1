@@ -1,4 +1,9 @@
 
+GRUPO - Gustavo Borges França, Wesley Mayk, Adriano Tosetto, Giulio Guilherme.
+
+ 
+
+
 insert into clientes(CPF, nome, origem, fone) values
 ('25467598411', 'Tester', 'Florianópolis', '1234567890'),
 ('12345678910', 'Tester2', 'Joinville', '9876543210'),
@@ -59,28 +64,32 @@ insert into consumos (id, hospede, itemCardapio, data, qtde) values
 
 
 
-select nome, CPF, fone from clientes where origem in ('Florianópolis', 'Blumenau', 'Joinville');
+3 - select nome, CPF, fone from clientes where origem in ('Florianópolis', 'Blumenau', 'Joinville');
 
 
-select motivo, count(motivo), avg(nroAcomp) acompanhantesMed , avg(dataSai-dataEnt) estadiaMed from hospedes group by motivo;
+4 - select motivo, count(motivo), avg(nroAcomp) acompanhantesMed , avg(dataSai-dataEnt) estadiaMed from hospedes group by motivo;
 
-select count(quarto) as nQuartos from reservas where dataEnt != '2017/10/29';
+5 - select cound(id) as quartos_sem_reserva from reservas where (dataEnt < '29-10-2017'
+ and dataSai > '29-10-2017') or (dataEnt > '29-10-2017')
 
-select quarto from hospedes where CPF in (select DISTINCT hospede from consumos where itemCardapio in (1, 2) and data = '2017/10/12');
+6 - select A.quarto from (
+(select cpf,quarto from hospedes where CPF in (select DISTINCT hospede from consumos where itemCardapio = 2 and data = '2017/10/12')) as J
+join
+(select CPF,quarto from hospedes where CPF in (select DISTINCT hospede from consumos where itemCardapio = 1 and data = '2017/10/12')) as A on A.CPF = J.CPF);
 
-select codigo, descricao from cardapios where not exists(select cpf from hospedes where not exists(select itemCardapio, hospede from consumos where cpf = hospede and itemCardapio = codigo));
+7 - select codigo, descricao from cardapios where not exists(select cpf from hospedes where not exists(select itemCardapio, hospede from consumos where cpf = hospede and itemCardapio = codigo));
 
-select count(numero) from quartos join tipoquartos on tipo = codigo where frigobar = 'S' and descricao = 'quartoDuplo' and not exists(select * from hospedes where quarto = numero);
+8 - select count(numero) from quartos join tipoquartos on tipo = codigo where frigobar = 'S' and descricao = 'quartoDuplo' and not exists(select * from hospedes where quarto = numero);
 
-select h.cpf, c.nome, h.placaVeiculo, h.quarto, Q.descricao, h.dataSai from hospedes h 
+9 - select h.cpf, c.nome, h.placaVeiculo, h.quarto, Q.descricao, h.dataSai from hospedes h 
 join clientes c on c.cpf = h.cpf
 join (select numero, descricao from quartos join tipoquartos on codigo = tipo) as Q on quarto = Q.numero;
 
-select descricao, preco from cardapios where preco >= ALL(select preco from cardapios) or preco <= ALL(select preco from cardapios);
+10 - select descricao, preco from cardapios where preco >= ALL(select preco from cardapios) or preco <= ALL(select preco from cardapios);
 
-select descricao, Q.contagem from cardapios join (select itemCardapio, count(itemCardapio) as contagem from consumos group by itemCardapio) as Q on Q.itemCardapio = codigo;
+11 - select descricao, Q.contagem from cardapios join (select itemCardapio, count(itemCardapio) as contagem from consumos group by itemCardapio) as Q on Q.itemCardapio = codigo;
 
-select nome, C.vezes, R.mediaEstadias from clientes left join (
+12 - select nome, C.vezes, R.mediaEstadias from clientes left join (
 	(select cliente, count(cliente) as vezes from reservas group by cliente) as C
 	left join 
 	(select cliente, avg(dataSai-dataEnt) as mediaEstadias from reservas group by cliente having count(cliente) >= 2) as R 
@@ -88,10 +97,10 @@ select nome, C.vezes, R.mediaEstadias from clientes left join (
 ) on C.cliente = clientes.cpf;
 
 
-select cpf, nome, fone from clientes c where exists(select cpf from hospedes h where dataSai > '2017/10/12' and dataEnt <= '2017/10/12' and c.cpf = h.cpf);
+13 - select cpf, nome, fone from clientes c where exists(select cpf from hospedes h where dataSai > '2017/10/12' and dataEnt <= '2017/10/12' and c.cpf = h.cpf);
 
-select * from cardapios where not exists(select * from consumos where codigo = itemCardapio);
+14a - select * from cardapios where not exists(select * from consumos where codigo = itemCardapio);
 
-select codigo, descricao, preco from cardapios left join consumos on codigo = itemCardapio where hospede is null;
+14b - select codigo, descricao, preco from cardapios left join consumos on codigo = itemCardapio where hospede is null;
 
 
